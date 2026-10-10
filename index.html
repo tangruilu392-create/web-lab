@@ -1,0 +1,260 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>欢迎光临我的小宇宙</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: #fff9f4;
+      background-image: radial-gradient(#fde2d0 1.5px, transparent 1.5px);
+      background-size: 20px 20px;
+      color: #5c4d4d;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      padding: 30px 16px;
+    }
+
+    .profile-card {
+      background: #ffffff;
+      max-width: 440px;
+      width: 100%;
+      padding: 30px 24px;
+      border-radius: 28px;
+      box-shadow: 0 12px 30px rgba(255, 183, 165, 0.15);
+      border: 3px solid #ffefe8;
+      text-align: center;
+    }
+
+    .avatar-wrapper {
+      position: relative;
+      width: 90px;
+      height: 90px;
+      margin: 0 auto 14px;
+    }
+
+    .avatar {
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, #ffd3b6, #ffaaa5);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 42px;
+      box-shadow: 0 6px 14px rgba(255, 170, 165, 0.35);
+      border: 4px solid #ffffff;
+      cursor: pointer;
+      transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .avatar:hover {
+      transform: rotate(10deg) scale(1.08);
+    }
+
+    .status-badge {
+      position: absolute;
+      bottom: 0;
+      right: 0px;
+      background: #a8e6cf;
+      color: #2b614d;
+      font-size: 11px;
+      font-weight: bold;
+      padding: 2px 8px;
+      border-radius: 12px;
+      border: 2px solid #ffffff;
+    }
+
+    h1 {
+      font-size: 20px;
+      color: #4a3b32;
+      margin-bottom: 4px;
+      font-weight: 700;
+    }
+
+    .subtitle {
+      font-size: 13px;
+      color: #b59b92;
+      margin-bottom: 6px;
+    }
+
+    /* 便签卡片区域 */
+    .info-section {
+      background: #fffaf7;
+      border: 1.5px dashed #ffd8ca;
+      border-radius: 20px;
+      padding: 16px 18px;
+      margin-top: 16px;
+      text-align: left;
+    }
+
+    .section-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: #d96b52;
+      margin-bottom: 10px;
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .info-item {
+      background: #ffffff;
+      padding: 8px 12px;
+      border-radius: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 6px rgba(255, 183, 165, 0.1);
+    }
+
+    .info-label {
+      font-size: 12px;
+      color: #a8928a;
+    }
+
+    .info-value {
+      font-size: 12px;
+      font-weight: 600;
+      color: #5c4d4d;
+    }
+
+    .hobbies-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .hobby-pill {
+      background: #ffffff;
+      color: #6b534b;
+      font-size: 12px;
+      font-weight: 500;
+      padding: 6px 12px;
+      border-radius: 20px;
+      border: 1px solid #ffe1d5;
+      box-shadow: 0 2px 5px rgba(255, 183, 165, 0.08);
+      transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .hobby-pill:hover {
+      transform: translateY(-2px) scale(1.04);
+      background: #fff0eb;
+      color: #e06d53;
+    }
+	  
+	  /* 底部按钮外层居中容器 */
+.action-section {
+  margin-top: 24px;
+}
+
+/* 果冻渐变跳转按钮本体 */
+.cute-jump-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  text-decoration: none; /* 去掉下划线 */
+  background: linear-gradient(135deg, #ff9a8b 0%, #ff6a88 100%); /* 蜜桃珊瑚渐变 */
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 12px 28px;
+  border-radius: 999px; /* 完全圆润的胶囊形状 */
+  box-shadow: 0 6px 18px rgba(255, 106, 136, 0.3); /* 柔和的发光阴影 */
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* Q弹贝塞尔曲线 */
+}
+
+/* 鼠标放上去：整体轻微浮起、发光加强，右侧箭头调皮地往右挪一点 */
+.cute-jump-btn:hover {
+  transform: translateY(-3px) scale(1.03);
+  box-shadow: 0 10px 22px rgba(255, 106, 136, 0.42);
+}
+
+.cute-jump-btn:hover .arrow-icon {
+  transform: translateX(4px);
+}
+
+.arrow-icon {
+  display: inline-block;
+  transition: transform 0.2s ease;
+}
+
+/* 鼠标按下去时：轻微按压反馈 */
+.cute-jump-btn:active {
+  transform: translateY(0) scale(0.97);
+}
+  </style>
+</head>
+<body>
+
+  <div class="profile-card">
+    <div class="avatar-wrapper">
+      <img src="avatar.jpg" class="avatar"alt =我的头像">
+      <div class="status-badge">在线中</div>
+    </div>
+
+    <h1>你好呀，我是lulu ✨</h1>
+    <p class="subtitle">今天也在认真摸鱼Zzz</p>
+
+    <!-- 板块一 -->
+    <div class="info-section">
+      <div class="section-title">🍓 个人小档案</div>
+      <div class="info-grid">
+        <div class="info-item">
+          <span class="info-label">生日</span>
+          <span class="info-value">03 年冬天</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">状态</span>
+          <span class="info-value">大学在读 / 准毕业</span>
+        </div>
+		  <div class="info-item">
+          <span class="info-label">班级学号</span>
+          <span class="info-value">2-23</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">出没地</span>
+          <span class="info-value">地球某个舒适角落</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 板块二 -->
+    <div class="info-section">
+      <div class="section-title">🔋 快乐充电清单</div>
+      <div class="hobbies-container">
+        <span class="hobby-pill">🍵 茉莉奶绿半糖</span>
+        <span class="hobby-pill">⛰️ 登山吸氧放空</span>
+        <span class="hobby-pill">📖 悬疑惊悚推理</span>
+        <span class="hobby-pill">✍️ 脑洞故事创作</span>
+        <span class="hobby-pill">🎧 戴耳机漫游世界</span>
+        <span class="hobby-pill">🐱 隔空云吸小动物</span>
+      </div>
+    </div>
+  </div>
+	
+<!-- 跳转留言板传送门 -->
+<div class="action-section">
+  <a href="guestbook.html" class="cute-jump-btn">
+    <span>💌 去留言板踩一脚</span>
+    <span class="arrow-icon">→</span>
+  </a>
+</div>
+
+</body>
+</html>
+

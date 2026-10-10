@@ -1,0 +1,351 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>💌 悄悄话投递站</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: #fff9f4;
+      background-image: radial-gradient(#fde2d0 1.5px, transparent 1.5px);
+      background-size: 20px 20px;
+      color: #5c4d4d;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      padding: 30px 16px;
+    }
+
+    /* ================= 欢迎弹窗遮罩层（核心效果） ================= */
+    .welcome-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(255, 245, 240, 0.75);
+      backdrop-filter: blur(8px); /* 梦幻毛玻璃虚化效果 */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 999; /* 保证浮在最上层 */
+      transition: opacity 0.4s ease, visibility 0.4s ease;
+    }
+
+    /* 欢迎弹窗小卡片 */
+    .welcome-card {
+      background: #ffffff;
+      padding: 36px 30px;
+      border-radius: 28px;
+      text-align: center;
+      max-width: 360px;
+      width: 90%;
+      border: 3px solid #ffefe8;
+      box-shadow: 0 15px 35px rgba(255, 170, 165, 0.25);
+      transform: scale(1);
+      transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .welcome-icon {
+      font-size: 42px;
+      margin-bottom: 12px;
+    }
+
+    .welcome-title {
+      font-size: 17px;
+      font-weight: 700;
+      color: #4a3b32;
+      margin-bottom: 10px;
+      letter-spacing: 0.5px;
+    }
+
+    .welcome-text {
+      font-size: 14px;
+      color: #7a635a;
+      line-height: 1.6;
+      margin-bottom: 24px;
+    }
+
+    /* 确认进入按钮 */
+    .enter-btn {
+      background: linear-gradient(135deg, #ff9a8b 0%, #ff6a88 100%);
+      color: white;
+      border: none;
+      padding: 11px 32px;
+      border-radius: 999px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 6px 16px rgba(255, 106, 136, 0.3);
+      transition: all 0.25s;
+    }
+
+    .enter-btn:hover {
+      transform: translateY(-2px) scale(1.04);
+      box-shadow: 0 8px 20px rgba(255, 106, 136, 0.4);
+    }
+
+    /* 点击确认后隐藏弹窗的样式类 */
+    .overlay-hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    /* ================= 留言板常规布局 ================= */
+    .board-card {
+      background: #ffffff;
+      max-width: 440px;
+      width: 100%;
+      padding: 28px 24px;
+      border-radius: 28px;
+      box-shadow: 0 12px 30px rgba(255, 183, 165, 0.15);
+      border: 3px solid #ffefe8;
+    }
+
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .back-btn {
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 600;
+      color: #ff8577;
+      background: #fff0eb;
+      padding: 6px 14px;
+      border-radius: 20px;
+      transition: all 0.2s;
+    }
+
+    .back-btn:hover {
+      background: #ffe3d9;
+      transform: translateX(-3px);
+    }
+
+    h2 {
+      font-size: 18px;
+      color: #4a3b32;
+    }
+
+    .form-group {
+      margin-bottom: 12px;
+    }
+
+    input[type="text"], textarea {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1.5px solid #ffe1d5;
+      background: #fffaf7;
+      border-radius: 14px;
+      font-size: 13px;
+      color: #5c4d4d;
+      outline: none;
+      font-family: inherit;
+      transition: all 0.2s;
+    }
+
+    input[type="text"]:focus, textarea:focus {
+      border-color: #ff9a8b;
+      background: #ffffff;
+      box-shadow: 0 0 0 3px rgba(255, 154, 139, 0.2);
+    }
+
+    textarea {
+      resize: none;
+      height: 80px;
+    }
+
+    .submit-btn {
+      width: 100%;
+      background: linear-gradient(135deg, #ff9a8b 0%, #ff6a88 100%);
+      color: white;
+      border: none;
+      padding: 11px;
+      border-radius: 999px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 6px 16px rgba(255, 106, 136, 0.25);
+      transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .submit-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(255, 106, 136, 0.35);
+    }
+
+    .messages-container {
+      margin-top: 24px;
+      border-top: 1.5px dashed #ffd8ca;
+      padding-top: 18px;
+    }
+
+    .list-title {
+      font-size: 13px;
+      color: #b59b92;
+      margin-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .msg-card {
+      background: #fffaf7;
+      border-radius: 14px;
+      padding: 12px 14px;
+      margin-bottom: 10px;
+      border: 1px solid #ffefe8;
+      animation: popIn 0.3s ease-out;
+    }
+
+    @keyframes popIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .msg-header {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      margin-bottom: 4px;
+    }
+
+    .msg-author {
+      font-weight: 600;
+      color: #e06d53;
+    }
+
+    .msg-time {
+      color: #c4aca3;
+      font-size: 11px;
+    }
+
+    .msg-content {
+      font-size: 13px;
+      color: #5c4d4d;
+      line-height: 1.5;
+      word-break: break-all;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 欢迎弹窗遮罩（进页面时默认弹出） -->
+  <div class="welcome-overlay" id="welcomeModal">
+    <div class="welcome-card">
+      <div class="welcome-icon">🔒</div>
+      <div class="welcome-title">欢迎来到悄悄话信箱</div>
+      <div class="welcome-text">
+        你可以在这里留下所有的秘密哦~
+      </div>
+      <button class="enter-btn" onclick="enterBoard()">开启信箱 ( ੭˙꒳˙)੭</button>
+    </div>
+  </div>
+
+  <!-- 留言板主体内容 -->
+  <div class="board-card">
+    <div class="top-bar">
+      <h2>💌 悄悄话信箱</h2>
+      <a href="index.html" class="back-btn">← 回主页</a>
+    </div>
+
+    <div class="form-group">
+      <input type="text" id="nickname" placeholder="留下你的可爱称呼 (例如: 藏着秘密的猫)">
+    </div>
+    <div class="form-group">
+      <textarea id="message" placeholder="在这里写下一句今天的心情或悄悄话吧～"></textarea>
+    </div>
+    <button class="submit-btn" onclick="sendMsg()">投递留言 📮</button>
+
+    <div class="messages-container">
+      <div class="list-title">
+        <span>📮 信箱留言</span>
+        <span id="msgCount">2 条留言</span>
+      </div>
+      <div id="messagesList"></div>
+    </div>
+  </div>
+
+  <!-- 交互逻辑脚本 -->
+  <script>
+    // 点击“开启信箱”按钮，关闭欢迎遮罩
+    function enterBoard() {
+      const modal = document.getElementById('welcomeModal');
+      modal.classList.add('overlay-hidden');
+    }
+
+    // 默认内置的预留留言
+    const defaultMessages = [
+      { author: "摸鱼小熊", text: "踩踩！这个小站的配色也太好看了吧～", time: "10:30" },
+      { author: "神秘旅人", text: "路过借一杯半糖奶绿，祝小站天天开心！", time: "09:15" }
+    ];
+
+    window.onload = function() {
+      loadMessages();
+    };
+
+    function getStorageMessages() {
+      const data = localStorage.getItem('my_cute_guestbook');
+      return data ? JSON.parse(data) : defaultMessages;
+    }
+
+    function loadMessages() {
+      const msgs = getStorageMessages();
+      const container = document.getElementById('messagesList');
+      const countLabel = document.getElementById('msgCount');
+      
+      container.innerHTML = '';
+      countLabel.innerText = `${msgs.length} 条留言`;
+
+      msgs.forEach(item => {
+        const itemDiv = document.createElement('div');
+        itemDiv.className = 'msg-card';
+        itemDiv.innerHTML = `
+          <div class="msg-header">
+            <span class="msg-author">${item.author}</span>
+            <span class="msg-time">${item.time}</span>
+          </div>
+          <div class="msg-content">${item.text}</div>
+        `;
+        container.appendChild(itemDiv);
+      });
+    }
+
+    function sendMsg() {
+      const nameInput = document.getElementById('nickname');
+      const msgInput = document.getElementById('message');
+
+      const name = nameInput.value.trim() || "匿名小可爱";
+      const text = msgInput.value.trim();
+
+      if (!text) {
+        alert("写点悄悄话再投递吧～");
+        return;
+      }
+
+      const now = new Date();
+      const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+
+      const msgs = getStorageMessages();
+      msgs.unshift({ author: name, text: text, time: timeStr });
+      localStorage.setItem('my_cute_guestbook', JSON.stringify(msgs));
+
+      loadMessages();
+      msgInput.value = '';
+    }
+  </script>
+</body>
+</html>
+
+</html>
